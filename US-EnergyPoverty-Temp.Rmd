@@ -31,23 +31,18 @@ The analysis was conducted on the county level in the US due to the increased sa
 **Educational Attainment data** available on the county-level from the USDA Economic Research Service, the most recent data is available for 2015 to 2019
 (Link: https://data.ers.usda.gov/reports.aspx?ID=17829 )
 ![Educational Attainment in US](img/educ-attainment.png)
-**Comprehensive County Indicators data** from County Health Rankings which compiles data from several data sources. The final analysis used the ***math and reading score indicators*** from this dataset that are modelled by Stanford Education Data Archive program based on EDFacts and state sources to achieve comparability across the country. Although the dataset is labelled as 2021 data, the testing score is actually based on 2018. 
+**Comprehensive County Indicators data** from County Health Rankings which compiles data from several data sources. The final analysis used the ***math and reading score indicators*** from this dataset that are modelled by Stanford Education Data Archive program based on EDFacts and state sources to achieve comparability across the country. Although the dataset is labelled as 2021 data, the testing score is actually based on 2018. The math and reading scores are presented as average grade level performance for 3rd graders.  The scores generally range from 1 to 4. The expected value is 3 indicating that 3rd graders are performing at a 3rd grade level. A score of 3.5 would they are perform 0.5 a grade level higher than expected. 
 (Link: https://www.countyhealthrankings.org/explore-health-rankings/rankings-data-documentation) 
 
-**Temperature data** available on the county-level for the entire US from NOAA National Centers for Environmental Information was downloaded as 60 month average ranging from 2015 to 2019 to align with other datasets. The entire temporal coverage in 1895 to present day. 
-(Link: https://www.ncdc.noaa.gov/cag/county/mapping/110/tavg/201501/60/value)
-![Average tempeature by county from 2015-2019](img/tavg.png)
 
 **Low-Income Energy Affordability data** available on county-level from the Department of Energy based on modelling done using the 2016 5-year American Community Survey (ACS5)
 (Link: https://www.energy.gov/eere/slsc/low-income-energy-affordability-data-lead-tool)
 ![California LEAD tool by county](img/CA-lead-tool-map.png)
-Limitations of the the datasets used: 
+**Limitations of the the datasets used**: 
 
 The LEAD energy affordability estimates are centered around housing energy costs. While this is important, an entire dimension of inequity due to energy poverty and mobility is missed out on due to the lack of information on transportation sector. 
 
 With county-level resolution in US being so challenging to achieve, it's important to note that there are several processes of modelling and estimations incorporated into the available datasets for the education data and LEAD tool that must be considered and noted. Biases could arise due to response bias and attrition for the surveys such as the American Community Survey (ACS) that are heavily relied on.
-
-In the case of temperature data, the lost resolution due to the averaging of data over a large spatial unit such as county must be noted as well.  
 
 Nevertheless, this analysis will use the best available data to my knowledge for reasonably overlapping time periods. 
 
@@ -56,37 +51,16 @@ Nevertheless, this analysis will use the best available data to my knowledge for
 # Read in data
 educ_df <- read_csv(here("data", "Education.csv"), skip = 4, show_col_types = FALSE)
 county_health <- read_csv(here("data", "analytic_data2021.csv"), skip = 1, show_col_types = FALSE)
-temp_avg_df <- read_csv(here("data", "temp", "110-tavg-201912-60.csv"), skip = 3, show_col_types = FALSE)
-temp_min_df <- read_csv(here("data", "temp", "110-tmin-201912-60.csv"), skip = 3,show_col_types = FALSE)
-temp_max_df <- read_csv(here("data", "temp", "110-tmax-201912-60.csv"), skip = 3,show_col_types = FALSE)
 LEAD_df <-
     list.files(path = here("data", "LEAD"), pattern = "*.csv") %>% 
     map_df(~read_csv(here("data", "LEAD",.), skip = 7,show_col_types = FALSE))
 ```
 
 
-```{r data wrangling, echo=FALSE}
-# Clean temp data to prepare for join
-temp_avg_df <- temp_avg_df %>%
-               rename(t_avg = Value) %>% 
-               select(1:3)
-temp_min_df <- temp_min_df %>%
-               rename(t_min = Value) %>% 
-               select(1:3)
-temp_max_df <- temp_max_df %>%
-               rename(t_max = Value) %>% 
-               select(1:3)
-```
+
 
 
 ```{r, echo=FALSE}
-# Join temperature statistics data
-join_temp<-temp_avg_df %>% 
-  full_join(temp_min_df, by= c("Location ID", "Location")) %>%       
-  full_join(temp_max_df, by= c("Location ID", "Location")) %>% 
-  separate(`Location ID`, 
-                c("State", "FIP-End")) %>% 
-  rename("Area name" = Location)
 # Clean education data
 educ_df <- educ_df %>% 
            drop_na(State, "2003 Urban Influence Code") %>% 
@@ -102,46 +76,26 @@ LEAD_df <- LEAD_df %>%
 county_health <- county_health %>% 
                  select( contains("code")| contains("state") | 
                          contains("county")|contains("v159")
-                         |contains("v160")|contains("v058")) 
-              
-  
+                         |contains("v160")) 
 ```
 
 ```{r, echo=FALSE}
 # Join LEAD, temp and education data
-energy_edu_temp<- join_temp %>% 
-                  left_join(educ_df, by= c("State", "Area name")) %>% 
+energy_edu<-      educ_df %>% 
                   full_join(LEAD_df, by= "FIPS Code")%>% 
-                  subset(select= -c(`FIP-End`,Name)) %>% 
                   clean_names() %>% 
                   mutate(pct_hs_or_less = percent_of_adults_with_less_than_a_high_school_diploma_2015_19
                          +percent_of_adults_with_a_high_school_diploma_only_2015_19 )
 
-energy_edu_temp <- energy_edu_temp %>% 
-                   mutate(comf_diff_temp = (72 - t_avg)) 
 
-all_param <- energy_edu_temp %>% 
+
+all_param <- energy_edu %>% 
              rename(fipscode = fips_code) %>% 
              full_join(county_health, by= "fipscode")
-  
 
 ```
 
-```{r, echo=FALSE}
-# Import built-in state datasets and abbreviations for join
-statefacts <- as.data.frame(state.x77)
-stateregion <- as.data.frame(state.region)
-stateabb <- as.data.frame(state.abb)
-statefacts <- statefacts %>% 
-  cbind(stateregion) %>% 
-  cbind(stateabb) %>% 
-  rename(region = state.region) %>% 
-  rename(state = state.abb)
 
-energy_edu_temp<- energy_edu_temp %>% 
-                  left_join(statefacts, by= "state")
-
-```
 
 ## Analysis Plan
 
@@ -149,25 +103,46 @@ There will be two stages to the analysis.
 
 ### Part 1
 First will be exploring whether there is a correlation between educational attainment and energy burden. 
+
+**How does educational attainment affect energy burden?**
+
 The [Insert Ref] paper concluded that across several energy poverty and education studies in developing countries that "households with a low level of educational attainment, have restricted access to clean energy forms, such as electricity".
 In the developed country context, we will test if a similar relationship exists between educational attainment and energy burden. The assumption is that **energy affordability** is a representative measure of access instead of the binary "access/no access" scenario in developing countries.  
 
 ### Part 2
 Next we will be exploring whether there is a correlation between energy burden and educational outcomes(measured by standardized math and reading scores).
+The idea is that examining a short-term education measure such as standardized test scores will reflect the effects of energy burden as surveyed and modeled in recent data. 
+
+**Does energy burden affect a student's ability to do well in school?**
+
+The assumption is that 3rd grader **english and math standardized test scores** are a representative measure of doing well in school. 
+
+With the energy affordability data mainly reflecting household building energy needs, it is expected that heating and cooling dominates energy spending. US Energy Information Administration that more that half of household energy spending is spent on heating and cooling [Insert Ref]. The lack of thermal comfort has shown to increase the amount of mistakes by even adults. Recent studies [Insert Ref] have indicated that the optimal learning temperature for students is around 72 deg F. 
+
+The rationale is that although most families in America have access to electricity and basic technologies such as lighting and temperature regulation, they may be unable to take full advantage of them due to the energy burden. 
 
 
-
-
-
-```{r}
-summary(lm(all_param$avg_energy_burden_percent_income ~  all_param$pct_hs_or_less + all_param$v058_rawvalue))
+```{r, echo=FALSE}
+lm(avg_energy_burden_percent_income ~  pct_hs_or_less, data=all_param) %>%
+  summary() %>% 
+  xtable() %>% 
+  kable(caption = "**Does educational attainment affect energy burden?**") 
 ```
-```{r}
-summary(lm(all_param$v160_rawvalue ~ all_param$avg_energy_burden_percent_income + all_param$comf_diff_temp))
+
+
+
+
+```{r, echo=FALSE}
+lm(v159_rawvalue ~ avg_energy_burden_percent_income , data=all_param) %>%
+  summary() %>% 
+  xtable() %>% 
+  kable(caption = "**Does energy burden affect reading scores (among 3rd graders)?**") 
+```
+```{r, echo=FALSE}
+lm(v160_rawvalue ~ avg_energy_burden_percent_income , data=all_param) %>%
+  summary() %>% 
+  xtable() %>% 
+  kable(caption = "**Does energy burden affect math scores (among 3rd graders)?**") 
 ```
 
-```{r}
-plot(all_param$v160_rawvalue ~ all_param$avg_energy_burden_percent_income + all_param$comf_diff_temp)
-
-```
 
