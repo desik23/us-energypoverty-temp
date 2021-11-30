@@ -194,7 +194,8 @@ pre code {
 <h3>Part 1</h3>
 <p>First will be exploring whether there is a correlation between educational attainment and energy burden.</p>
 <p><strong>How does educational attainment affect energy burden?</strong></p>
-<p>The [Insert Ref] paper concluded that across several energy poverty and education studies in developing countries that “households with a low level of educational attainment, have restricted access to clean energy forms, such as electricity”. In the developed country context, we will test if a similar relationship exists between educational attainment and energy burden. The assumption is that <strong>energy affordability</strong> is a representative measure of access instead of the binary “access/no access” scenario in developing countries.</p>
+<p>The [Insert Ref] paper concluded that across several energy poverty and education studies in developing countries that “households with a low level of educational attainment, have restricted access to clean energy forms, such as electricity”. In the developed country context, we will test if a similar relationship exists between educational attainment and energy burden. The assumption is that <strong>energy burden</strong> is a representative measure of access instead of the binary “access/no access” scenario in developing countries.</p>
+<p><span class="math display">\[\text{energy burden}_i = \beta_0 + \beta_1 \text{educational attainment}_i + \epsilon_i\]</span> <strong>Energy burden will be represent by the average energy burden (% Income)</strong> from the LEAD Energy Affordability data <strong>Educational attainment will be represented by the % of adults with a HS diploma or less</strong> from USDA Economic Research Service data</p>
 </div>
 <div id="part-2" class="section level3">
 <h3>Part 2</h3>
@@ -202,184 +203,72 @@ pre code {
 <p><strong>Does energy burden affect a student’s ability to do well in school?</strong></p>
 <p>The assumption is that 3rd grader <strong>english and math standardized test scores</strong> are a representative measure of doing well in school.</p>
 <p>With the energy affordability data mainly reflecting household building energy needs, it is expected that heating and cooling dominates energy spending. US Energy Information Administration that more that half of household energy spending is spent on heating and cooling [Insert Ref]. The lack of thermal comfort has shown to increase the amount of mistakes by even adults. Recent studies [Insert Ref] have indicated that the optimal learning temperature for students is around 72 deg F.</p>
-<p>The idea is that although most families in America have access to electricity and basic technologies such as lighting and temperature regulation, they may be unable to take full advantage of them due to the energy burden.</p>
-<table>
-<caption>
-<strong>Does educational attainment affect energy burden?</strong>
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Estimate
-</th>
-<th style="text-align:right;">
-Std. Error
-</th>
-<th style="text-align:right;">
-t value
-</th>
-<th style="text-align:right;">
-Pr(&gt;|t|)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:right;">
-1.1105603
-</td>
-<td style="text-align:right;">
-0.0961281
-</td>
-<td style="text-align:right;">
-11.55292
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-pct_hs_or_less
-</td>
-<td style="text-align:right;">
-0.0619539
-</td>
-<td style="text-align:right;">
-0.0019853
-</td>
-<td style="text-align:right;">
-31.20616
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-</tbody>
-</table>
-<table>
-<caption>
-<strong>Does energy burden affect reading scores (among 3rd graders)?</strong>
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Estimate
-</th>
-<th style="text-align:right;">
-Std. Error
-</th>
-<th style="text-align:right;">
-t value
-</th>
-<th style="text-align:right;">
-Pr(&gt;|t|)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:right;">
-3.242631
-</td>
-<td style="text-align:right;">
-0.0161514
-</td>
-<td style="text-align:right;">
-200.76446
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-avg_energy_burden_percent_income
-</td>
-<td style="text-align:right;">
--0.059311
-</td>
-<td style="text-align:right;">
-0.0038572
-</td>
-<td style="text-align:right;">
--15.37668
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-</tbody>
-</table>
-<table>
-<caption>
-<strong>Does energy burden affect math scores (among 3rd graders)?</strong>
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-Estimate
-</th>
-<th style="text-align:right;">
-Std. Error
-</th>
-<th style="text-align:right;">
-t value
-</th>
-<th style="text-align:right;">
-Pr(&gt;|t|)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:right;">
-3.2333110
-</td>
-<td style="text-align:right;">
-0.0189697
-</td>
-<td style="text-align:right;">
-170.44618
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-avg_energy_burden_percent_income
-</td>
-<td style="text-align:right;">
--0.0632791
-</td>
-<td style="text-align:right;">
-0.0045148
-</td>
-<td style="text-align:right;">
--14.01598
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-</tbody>
-</table>
+<p>The rationale is that although most families in America have access to electricity and basic technologies such as lighting and temperature regulation, they may be unable to take full advantage of them due to the energy burden.</p>
+<p><span class="math display">\[\text{standardized test scores-READING}_i = \beta_0 + \beta_1 \text{energy burden}_i + \epsilon_i\]</span> <span class="math display">\[\text{standardized test scores-MATH}_i = \beta_0 + \beta_1 \text{energy burden}_i + \epsilon_i\]</span> <strong>Standardized test scores will be represented by the math and reading scores presented as average grade level performance for 3rd graders</strong> from Stanford Education Data Archive data accessed through County Health Rankings <strong>Energy burden will be represent by the average energy burden (% Income)</strong> from the LEAD Energy Affordability data</p>
+<pre><code>## 
+## Call:
+## lm(formula = avg_energy_burden_percent_income ~ pct_hs_or_less, 
+##     data = all_param)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.7571 -0.7870 -0.1711  0.5935  8.0793 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    1.110560   0.096128   11.55   &lt;2e-16 ***
+## pct_hs_or_less 0.061954   0.001985   31.21   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.191 on 3133 degrees of freedom
+##   (65 observations deleted due to missingness)
+## Multiple R-squared:  0.2371, Adjusted R-squared:  0.2369 
+## F-statistic: 973.8 on 1 and 3133 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p><strong>Answer: Since <span class="math inline">\(p-value is &lt; 0.001\)</span> we reject the null that educational attainment(% with HS diploma or less) has an effect of 0 on Average Energy Burden(% Income). We can say there is a statistically significant correlation (at the 0.1% significance level).</strong></p>
+<p>The <span class="math inline">\(\beta_1\)</span> indicates that there is <strong>0.062 increase in average energy burden as % Income for every percent point increase in % with HS diploma or less</strong> in a given a county.</p>
+<pre><code>## 
+## Call:
+## lm(formula = v159_rawvalue ~ avg_energy_burden_percent_income, 
+##     data = all_param)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.16714 -0.16623  0.01225  0.17565  1.15547 
+## 
+## Coefficients:
+##                                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                       3.242631   0.016151  200.76   &lt;2e-16 ***
+## avg_energy_burden_percent_income -0.059311   0.003857  -15.38   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2652 on 2778 degrees of freedom
+##   (420 observations deleted due to missingness)
+## Multiple R-squared:  0.07844,    Adjusted R-squared:  0.0781 
+## F-statistic: 236.4 on 1 and 2778 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = v160_rawvalue ~ avg_energy_burden_percent_income, 
+##     data = all_param)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.15367 -0.19527  0.00749  0.20253  1.09205 
+## 
+## Coefficients:
+##                                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                       3.233311   0.018970  170.45   &lt;2e-16 ***
+## avg_energy_burden_percent_income -0.063279   0.004515  -14.02   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3058 on 2690 degrees of freedom
+##   (508 observations deleted due to missingness)
+## Multiple R-squared:  0.06806,    Adjusted R-squared:  0.06771 
+## F-statistic: 196.4 on 1 and 2690 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p><strong>Answer: Since <span class="math inline">\(p-value is &lt; 0.001\)</span> we reject the null that there is that Average Energy Burden(% Income) has an effect of 0 on standardized test scores . We can say there is a statistically significant correlation (at the 0.1% significance level).</strong></p>
+<p>The <span class="math inline">\(\beta_1\)</span> indicates that there is <strong>0.06 decrease in average grade level in reading and math scores for for every percent point increase in average energy burden as % Income</strong> in a given a county.</p>
 </div>
 </div>
 
